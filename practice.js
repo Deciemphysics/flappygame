@@ -1,10 +1,20 @@
+var currentState,
+    width,
+    height;
 
-
+var states = {
+    splash: 0,
+    game: 1,
+    score: 2
+}
+var canvas;
+var renderingContext;
 function main(){
     windowSetup();
     canvasSetup();
     currentState = states.splash;
     document.body.appendChild(canvas);
+    
     loadGraphics();
 }
 
@@ -32,6 +42,10 @@ function loadGraphics(){
     var img = new Image();
     img.src = "resources/img/link.png";
     img.onload = function(){
+        initSprites(this);
         renderingContext.fillStyle = "#8BE4Df";
-    }
+        renderingContext.fillRect(0,0, width, height);
+        link.draw(renderingContext, 100, 100)
+    };
+    
 }
