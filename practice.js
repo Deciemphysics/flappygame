@@ -12,6 +12,60 @@ var states = {
 var canvas;
 var renderingContext;
 
+class Antagonist {
+    constructor() {
+        if (windowWidth < 500) {
+            this.x = 320;
+        } else {
+            this.x = 400;
+        }
+        this.y = 200;
+
+        this.collisionX = this.x;
+        this.collisionY = this.y;
+
+        this.frame = 0;
+        this.velocity = 5;
+        this.animation = [0];
+
+        this.rotation = 0;
+        this.radius = 12;
+
+        // this.gravity (doesnt matter)
+        // this._jump (doesnt matter)
+        this.peanutButter = null;
+
+        // this.jumpCount (doesnt matter)
+
+        // this.jump() doesnt matter
+        this.update = function () {
+            var k = currentState === states.Splash ? 10 : 5;
+            this.frame += frames % k === 0 ? 1 : 0;
+            this.frame %= this.animation.length;
+            if (currentState === states.Splash) {
+                this.updateIdleVillain();
+            } else {
+                this.updatePlayVillain();
+            }
+        }
+
+        this.updateIdleVillain = function(){
+
+        }
+        this.updatePlayVillain = function(){
+            this.x -= this.velocity;
+            if (this.x = 0){
+                this.destroyVillain();
+            }
+        }
+        this.destroyVillain = function(){
+            // This needs to remove the wall from my game
+            // Ask how to drop a reference to the villain. Lets go see trent
+        }
+    }
+}
+
+
 class Protagonist { // This is our hero constructor 
     constructor() {
         this.x = 100;
@@ -31,9 +85,9 @@ class Protagonist { // This is our hero constructor
         this.jumpCount = 2;
 
         this.jump = function () {
-            if(this.jumpCount > 0 ){
+            if (this.jumpCount > 0) {
                 this.velocity = -this._jump;
-                this.jumpCount --;
+                this.jumpCount--;
             }
         }
 
@@ -49,15 +103,15 @@ class Protagonist { // This is our hero constructor
             }
         }
 
-        this.updateIdleHero = function(){
+        this.updateIdleHero = function () {
             //this.y = 180;
         }
 
-        this.updatePlayHero = function (){
+        this.updatePlayHero = function () {
             this.velocity += this.gravity;
             this.y += this.velocity;
-            if(this.y >= 150){ // This checks sticking the landing
-                this.y = 150; 
+            if (this.y >= 150) { // This checks sticking the landing
+                this.y = 150;
                 this.velocity = this._jump;
                 this.jumpCount = 2;
             }
