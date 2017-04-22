@@ -126,7 +126,7 @@ class Octorok {
         this.height = octorokSprite[0].height;
 
         this.detectCollision = function () {
-            if (this.x <= (hero.x + hero.width - 5) && this.x >= hero.x && (this.height + 150) <= (hero.y + hero.height)) {
+            if (this.x <= (hero.x + hero.width - 3) && this.x >= hero.x && (this.height + 153) <= (hero.y + hero.height)) {
                 console.log("You're dead");
                 currentState = states.Splash;
             }
@@ -147,11 +147,11 @@ class Octorok2 {
         this.frame = 0;
         this.animation = [0, 1, 2, 1];
         this.rotation = 0;
-        this.width = octorokSprite.width;
-        this.height = octorokSprite.height;
+        this.width = octorokSprite[0].width;
+        this.height = octorokSprite[0].height;
 
         this.detectCollision = function () {
-            if (this.x <= (hero.x + hero.width - 5) && this.x >= hero.x  ) {
+            if (this.x <= (hero.x + hero.width - 3) && this.x >= hero.x && (this.height + 153) <= (hero.y + hero.height))  {
                 console.log("You're dead");
                 // currentState = states.Splash;
             }
@@ -268,7 +268,7 @@ class Protagonist { // This is our hero constructor
         this.radius = 12;
 
         this.gravity = 0.25;
-        this._jump = 4.6;
+        this._jump = 4.4;
         this.peanutButter = null;
 
         this.jumpCount = 1;
