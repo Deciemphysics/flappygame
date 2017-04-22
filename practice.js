@@ -81,7 +81,7 @@ class OctoGroup2 {
         this.update = function () { // How often they come in
             //var randomFrame = 90 + 25*(Math.floor(Math.random() * 3));
             //console.log(randomFrame);
-            if (frames % 131 === 0) { // ADD AN OCTOROK
+            if (frames % 113 === 0) { // ADD AN OCTOROK
                 this.add();
             }
 
