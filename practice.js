@@ -96,13 +96,13 @@ class OctoGroup2 {
                 }
 
                 octorok2.x -= 3;
+                octorok2.frame += frames % 10 === 0 ? 1 : 0;
+                octorok2.frame %= octorok2.animation.length;
                 if (octorok2.x < -octorok2.width) {
                     this.collection.splice(i, 1);
                     i--;
                     len--;
                 }
-                octorok2.frame += frames % 10 === 0 ? 1 : 0;
-                octorok2.frame %= octorok2.animation.length;
             }
         }
 
@@ -153,7 +153,7 @@ class Octorok2 {
         this.detectCollision = function () {
             if (this.x <= (hero.x + hero.width - 3) && this.x >= hero.x && (this.height + 153) <= (hero.y + hero.height))  {
                 console.log("You're dead");
-                // currentState = states.Splash;
+                currentState = states.Splash;
             }
         }
 
