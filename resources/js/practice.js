@@ -4,7 +4,9 @@ var currentState,
     frames = 0,
     ogroup,
     o2group,
+    backTrees,
     trees,
+    score = 0,
     hero;
 
 var states = {
@@ -50,6 +52,7 @@ class OctoGroup {
                 octorok.frame %= octorok.animation.length;
                 if (octorok.x < -octorok.width) {
                     this.collection.splice(i, 1);
+                    score++;
                     i--;
                     len--;
                 }
@@ -100,6 +103,7 @@ class OctoGroup2 {
                 octorok2.frame %= octorok2.animation.length;
                 if (octorok2.x < -octorok2.width) {
                     this.collection.splice(i, 1);
+                    score++;
                     i--;
                     len--;
                 }
@@ -127,8 +131,8 @@ class Octorok {
 
         this.detectCollision = function () {
             if (this.x <= (hero.x + hero.width - 3) && this.x >= hero.x && (this.height + 153) <= (hero.y + hero.height)) {
-                console.log("You're dead");
-                currentState = states.Splash;
+                console.log(score);
+                currentState = states.Score;
             }
         }
 
@@ -152,8 +156,8 @@ class Octorok2 {
 
         this.detectCollision = function () {
             if (this.x <= (hero.x + hero.width - 3) && this.x >= hero.x && (this.height + 153) <= (hero.y + hero.height))  {
-                console.log("You're dead");
-                currentState = states.Splash;
+                console.log(score);
+                currentState = states.Score;
             }
         }
 
@@ -214,10 +218,63 @@ class TreeGroup {
 
     }
 }
+/*
+class backTreeGroup {
+    constructor() {
+        this.collection = [];
+
+        this.reset = function () {
+            this.collection = [];
+        }
+
+        this.add = function () {
+            switch (Math.floor(Math.random() * 3)) {
+                case 0:
+                    this.collection.push(new backTree());
+                    break;
+                case 1:
+                    this.collection.push(new backTree2());
+                    break;
+                case 2:
+                    this.collection.push(new backTree3());
+                    break;
+
+            }
+        }
+
+        this.update = function () {
+            if (frames % 10 === 0) {
+                this.add();
+            }
+            for (var i = 0, len = this.collection.length; i < len; i++) {
+                var backTree = this.collection[i];
+
+
+                backTree.x -= 2;
+                if (backTree.x < -backTree.width) {
+                    this.collection.splice(i, 1);
+                    i--;
+                    len--;
+                }
+
+            }
+        }
+        this.draw = function () {
+            for (var i = 0, len = this.collection.length; i < len; i++) {
+                var backTree = this.collection[i];
+                backTree.draw();
+            }
+        }
+
+    }
+}
+*/
+
+
 class Tree {
     constructor() {
         this.x = 400;
-        this.y = (328 + Math.floor(Math.random() * 25));
+        this.y = (330 + Math.floor(Math.random() * 25));
         this.width = 100;
 
         this.draw = function () {
@@ -251,8 +308,46 @@ class Tree3 {
 
     }
 }
+/* I DO NOT LIKE TREES IN THE BACKGROUND
+class backTree {
+    constructor() {
+        this.x = 400;
+        this.y = (240 + Math.floor(Math.random() * 15));
+        this.width = 100;
 
+        this.draw = function () {
+            treeSprite.draw(renderingContext, this.x, this.y);
+        }
 
+    }
+}
+class backTree2 {
+    constructor() {
+        this.x = 400;
+        this.y = (240 + Math.floor(Math.random() * 15));
+        this.width = 100;
+
+        this.draw = function () {
+            treeSprite2.draw(renderingContext, this.x, this.y);
+        }
+
+    }
+}
+class backTree3 {
+    constructor() {
+        this.x = 400;
+        this.y = (240 + Math.floor(Math.random() * 15));
+        this.width = 100;
+
+        this.draw = function () {
+
+            treeSprite3.draw(renderingContext, this.x, this.y);
+        }
+
+    }
+}
+
+*/
 class Protagonist { // This is our hero constructor 
     constructor() {
         this.x = 50;
@@ -271,7 +366,7 @@ class Protagonist { // This is our hero constructor
         this._jump = 4.4;
         this.peanutButter = null;
 
-        this.jumpCount = 1;
+        this.jumpCount = 2;
 
         this.jump = function () {
             if (this.jumpCount > 0) {
@@ -299,8 +394,8 @@ class Protagonist { // This is our hero constructor
         this.updatePlayHero = function () {
             this.velocity += this.gravity;
             this.y += this.velocity;
-            if (this.y >= 150) { // This checks sticking the landing
-                this.y = 150;
+            if (this.y >= 145) { // This checks sticking the landing
+                this.y = 145;
                 this.velocity = this._jump;
                 this.jumpCount = 2;
             }
@@ -330,6 +425,12 @@ function onPress(evt) { // Passing in an event, either touch or click
         case states.Game:
             hero.jump();
             break;
+        case states.Score:
+            ogroup.reset();
+            o2group.reset();
+            score = 0;
+            currentState = states.Splash;
+            break;
     }
 }
 
@@ -344,6 +445,7 @@ function main() { // This is our main start function
     ogroup = new OctoGroup();
     o2group = new OctoGroup2();
     trees = new TreeGroup();
+    //backTrees = new backTreeGroup();
 }
 
 
@@ -394,18 +496,21 @@ function GameLoop() { // This is our base loop for the function
 
 function update() { // This is our function to keep moving him
     frames++;
+    //backTrees.update();
     if (currentState === states.Game) {
         ogroup.update();
         o2group.update();
     }
     hero.update();
     trees.update();
+    document.getElementById("score").innerHTML = score;
 }
 
 function render() { // This places our hero
     renderingContext.fillRect(0, 0, width, height);
     hyrule.draw(renderingContext, 0, 0);
     // octorokSprite.draw(renderingContext, 220, 340);
+    //backTrees.draw(renderingContext);
     ogroup.draw(renderingContext);
     o2group.draw(renderingContext);
     hero.draw(renderingContext);
