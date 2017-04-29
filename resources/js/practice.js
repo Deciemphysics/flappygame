@@ -456,6 +456,7 @@ function main() { // This is our main start function
     ogroup = new OctoGroup();
     o2group = new OctoGroup2();
     trees = new TreeGroup();
+    console.log("Try clicking the turbo button when the octoroks are moving. It WILL make you jump. Be careful!");
     //backTrees = new backTreeGroup();
 }
 
