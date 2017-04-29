@@ -7,6 +7,8 @@ var currentState,
     backTrees,
     trees,
     score = 0,
+    hiScore = 0,
+    oVelocity = 3,
     hero;
 
 var states = {
@@ -45,9 +47,9 @@ class OctoGroup {
 
                 if (i == 0) {
                     octorok.detectCollision();
-                    console.log(octorok.width)
+                    //console.log(octorok.width)
                 }
-                octorok.x -= 3;
+                octorok.x -= octorok.vel;
                 octorok.frame += frames % 10 === 0 ? 1 : 0;
                 octorok.frame %= octorok.animation.length;
                 if (octorok.x < -octorok.width) {
@@ -98,7 +100,7 @@ class OctoGroup2 {
                     octorok2.detectCollision();
                 }
 
-                octorok2.x -= 3;
+                octorok2.x -= octorok2.vel;
                 octorok2.frame += frames % 10 === 0 ? 1 : 0;
                 octorok2.frame %= octorok2.animation.length;
                 if (octorok2.x < -octorok2.width) {
@@ -124,6 +126,7 @@ class Octorok {
         this.x = 400;
         this.y = 300; //+ Math.floor(Math.random()*50);
         this.frame = 0;
+        this.vel = oVelocity;
         this.animation = [0, 1, 2, 1];
         this.rotation = 0;
         this.width = octorokSprite[0].width;
@@ -131,7 +134,7 @@ class Octorok {
 
         this.detectCollision = function () {
             if (this.x <= (hero.x + hero.width - 3) && this.x >= hero.x && (this.height + 153) <= (hero.y + hero.height)) {
-                console.log(score);
+                //console.log(score);
                 currentState = states.Score;
             }
         }
@@ -148,6 +151,7 @@ class Octorok2 {
     constructor() {
         this.x = 400;
         this.y = 305; //+ Math.floor(Math.random()*50);
+        this.vel = oVelocity;
         this.frame = 0;
         this.animation = [0, 1, 2, 1];
         this.rotation = 0;
@@ -155,8 +159,8 @@ class Octorok2 {
         this.height = octorokSprite[0].height;
 
         this.detectCollision = function () {
-            if (this.x <= (hero.x + hero.width - 3) && this.x >= hero.x && (this.height + 153) <= (hero.y + hero.height))  {
-                console.log(score);
+            if (this.x <= (hero.x + hero.width - 3) && this.x >= hero.x && (this.height + 153) <= (hero.y + hero.height)) {
+                //console.log(score);
                 currentState = states.Score;
             }
         }
@@ -416,7 +420,7 @@ class Protagonist { // This is our hero constructor
 }
 
 function onPress(evt) { // Passing in an event, either touch or click
-    console.log("click happened");
+    //console.log("click happened");
     switch (currentState) {
         case states.Splash:
             hero.jump();
@@ -428,7 +432,12 @@ function onPress(evt) { // Passing in an event, either touch or click
         case states.Score:
             ogroup.reset();
             o2group.reset();
+            if (score > hiScore) {
+                localStorage.hiScore = score;
+                hiScore = localStorage.hiScore;
+            }
             score = 0;
+            oVelocity = 3;
             currentState = states.Splash;
             break;
     }
@@ -438,8 +447,10 @@ function main() { // This is our main start function
     windowSetup();
     canvasSetup();
     currentState = states.Splash;
-    document.body.appendChild(canvas);
-
+    document.getElementById("wrapper").appendChild(canvas);
+    if (localStorage.hiScore) {
+        hiScore = localStorage.hiScore;
+    }
     loadGraphics();
     hero = new Protagonist();
     ogroup = new OctoGroup();
@@ -452,7 +463,7 @@ function main() { // This is our main start function
 function windowSetup() { // This is defining the window for the canvas
     var windowWidth = $(window).width();
     var inputEvent = "touchstart";
-    console.log(windowWidth);
+    // console.log(windowWidth);
     if (windowWidth < 500) {
         width = 320;
         height = 370;
@@ -477,8 +488,10 @@ function loadGraphics() { // This is importing my graphic image and ALSO putting
     img.src = "resources/img/linkSheet.png";
     img.onload = function () {
         initSprites(this);
-        renderingContext.fillStyle = "#8BE4Df";
+        renderingContext.fillStyle = "#000000";
         renderingContext.fillRect(0, 0, width, height);
+        renderingContext.font = "30px Permanent Marker";
+        renderingContext.textAlign = "center";
 
         // link.draw(renderingContext, 100, 100); // this will change
         GameLoop();
@@ -503,7 +516,9 @@ function update() { // This is our function to keep moving him
     }
     hero.update();
     trees.update();
-    document.getElementById("score").innerHTML = score;
+    document.getElementById("score").innerHTML = "Score: " + score;
+    document.getElementById("hiscore").innerHTML = "Hi-Score: " + hiScore;
+
 }
 
 function render() { // This places our hero
@@ -515,4 +530,18 @@ function render() { // This places our hero
     o2group.draw(renderingContext);
     hero.draw(renderingContext);
     trees.draw(renderingContext);
+    if (currentState === states.Splash) {
+        renderingContext.fillText("Double Jump to Win!", canvas.width / 2, canvas.height / 2);
+        renderingContext.fillText("Click to Begin!", canvas.width / 2, canvas.height * 2 / 3);
+    }
+    if (currentState === states.Score) {
+        renderingContext.fillText("Game Over!", canvas.width / 2, canvas.height / 2);
+        renderingContext.fillText("Click to Restart!", canvas.width / 2, canvas.height * 2 / 3)
+    }
+}
+
+function turbo (){
+    setTimeout(function(){
+        oVelocity = 15;
+    }, 2000);
 }
